@@ -8,6 +8,7 @@ import {
   analyzeProfileWithClaude,
   validateProfile,
 } from '../lib/cap-analyzer.js';
+import { sendReportEmail } from '../lib/email-report.js';
 
 const app = express();
 app.use(cors());
@@ -20,6 +21,8 @@ app.get('/api/health', (_req, res) => {
     ok: true,
     hasKey: Boolean(process.env.ANTHROPIC_API_KEY),
     hasPassword: Boolean(process.env.APP_PASSWORD),
+    hasResend: Boolean(process.env.RESEND_API_KEY),
+    emailTo: process.env.REPORT_EMAIL_TO || null,
   });
 });
 
@@ -78,7 +81,37 @@ app.post('/api/analyze', async (req, res) => {
   }
 });
 
+app.post('/api/send-report', async (req, res) => {
+  const expectedPassword = process.env.APP_PASSWORD;
+  const auth = req.headers.authorization || '';
+  const token = auth.replace(/^Bearer\s+/i, '').trim();
+  if (!expectedPassword || token !== expectedPassword) {
+    return res.status(401).json({ error: 'Non authentifié' });
+  }
+
+  const apiKey = process.env.RESEND_API_KEY;
+  const to = process.env.REPORT_EMAIL_TO;
+  const from = process.env.REPORT_EMAIL_FROM || 'CAP 2030 <onboarding@resend.dev>';
+
+  if (!apiKey) return res.status(500).json({ error: 'RESEND_API_KEY non configurée sur le serveur.' });
+  if (!to) return res.status(500).json({ error: 'REPORT_EMAIL_TO non configurée sur le serveur.' });
+
+  const { profile, report } = req.body || {};
+  if (!profile || !report) {
+    return res.status(400).json({ error: 'Profil ou rapport manquant.' });
+  }
+
+  try {
+    const data = await sendReportEmail({ profile, report, apiKey, to, from });
+    res.json({ ok: true, id: data?.id || null });
+  } catch (err) {
+    console.error('Erreur /api/send-report :', err);
+    res.status(500).json({ error: err.message || "Erreur lors de l'envoi de l'email." });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`\n  ▸ Serveur CAP 2030 démarré sur http://localhost:${PORT}`);
-  console.log(`  ▸ Clé Anthropic : ${process.env.ANTHROPIC_API_KEY ? 'configurée ✓' : 'manquante ✗ (voir .env)'}\n`);
+  console.log(`  ▸ Clé Anthropic : ${process.env.ANTHROPIC_API_KEY ? 'configurée ✓' : 'manquante ✗ (voir .env)'}`);
+  console.log(`  ▸ Resend        : ${process.env.RESEND_API_KEY ? `configurée ✓ → ${process.env.REPORT_EMAIL_TO || '(REPORT_EMAIL_TO manquant)'}` : 'manquante ✗ (voir .env)'}\n`);
 });
