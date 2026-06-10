@@ -150,9 +150,17 @@ export default function Report({ report, profile, onReset }) {
         </Section>
 
         <Section number={4} eyebrow="Formation" title="Recommandations formation">
+          <p className="font-serif text-navy/70 text-sm mb-8 max-w-2xl italic">
+            Toutes les formations recommandées proviennent du catalogue officiel CFPC
+            (cap.cfpc.net) et sont rattachées au tag « Profession comptable 2030 ».
+          </p>
           <div className="space-y-10 max-w-3xl">
             {recommandationsFormation.map((r, i) => (
-              <div key={i} className="grid grid-cols-[auto,1fr] gap-6">
+              <div
+                key={i}
+                className="grid grid-cols-[auto,1fr] gap-6"
+                style={{ breakInside: 'avoid', pageBreakInside: 'avoid' }}
+              >
                 <div className="font-display text-gold text-xl leading-none pt-1">
                   {String(i + 1).padStart(2, '0')}
                 </div>
@@ -165,15 +173,26 @@ export default function Report({ report, profile, onReset }) {
                       {PRIORITE_LABEL[r.priorite] || r.priorite}
                     </span>
                   </div>
-                  {(r.rattachement || r.duree) && (
-                    <div className="text-xs uppercase tracking-wider2 text-navy/50 mb-3 flex flex-wrap gap-x-6 gap-y-1">
-                      {r.rattachement && <span>Axe · {r.rattachement}</span>}
-                      {r.duree && <span>Durée · {r.duree}</span>}
-                    </div>
-                  )}
-                  <p className="font-serif text-navy/85 leading-relaxed">
+                  <div className="text-xs uppercase tracking-wider2 text-navy/50 mb-3 flex flex-wrap gap-x-6 gap-y-1">
+                    {r.rattachement && <span>Axe · {r.rattachement}</span>}
+                    {r.type && <span>Type · {r.type}</span>}
+                    {r.duree && <span>Durée · {r.duree}</span>}
+                    {r.modules && <span>Modules · {r.modules}</span>}
+                  </div>
+                  <p className="font-serif text-navy/85 leading-relaxed mb-3">
                     {r.justification}
                   </p>
+                  {r.url && (
+                    <a
+                      href={r.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-[11px] uppercase tracking-wider2 text-gold hover:text-navy font-semibold underline underline-offset-4 decoration-gold/40 hover:decoration-navy"
+                    >
+                      Voir sur catalogue.cfpc.net
+                      <span aria-hidden>→</span>
+                    </a>
+                  )}
                 </div>
               </div>
             ))}
@@ -266,10 +285,19 @@ export default function Report({ report, profile, onReset }) {
                       <div className="font-display text-navy text-base leading-snug">
                         {r.intitule}
                       </div>
-                      {r.rattachement && (
-                        <div className="text-[10px] uppercase tracking-wider2 text-navy/45 mt-1">
-                          Axe · {r.rattachement}
-                        </div>
+                      <div className="text-[10px] uppercase tracking-wider2 text-navy/45 mt-1 flex flex-wrap gap-x-3 gap-y-0.5">
+                        {r.rattachement && <span>Axe · {r.rattachement}</span>}
+                        {r.type && <span>· {r.type}</span>}
+                      </div>
+                      {r.url && (
+                        <a
+                          href={r.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-block mt-1.5 text-[10px] uppercase tracking-wider2 text-gold hover:text-navy font-semibold underline underline-offset-2 break-all"
+                        >
+                          {r.url.replace(/^https?:\/\//, '')}
+                        </a>
                       )}
                     </td>
                     <td className="py-4 px-3 align-top whitespace-nowrap">
