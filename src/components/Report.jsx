@@ -1,6 +1,6 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import ScoreVisual from './ScoreVisual.jsx'
-import { exportReportToPdf } from '../lib/pdf.js'
+import { exportReportToPdf } from '../lib/pdf.jsx'
 
 const PRIORITE_LABEL = {
   haute: 'Priorité haute',
@@ -49,23 +49,13 @@ function Section({ eyebrow, number, title, children }) {
 }
 
 export default function Report({ report, profile, onReset }) {
-  const reportRef = useRef(null)
   const [exporting, setExporting] = useState(false)
 
   async function handleExport() {
-    if (!reportRef.current) return
     setExporting(true)
     try {
       const filename = `cap2030-${(profile.intitulePoste || 'profil').toLowerCase().replace(/\s+/g, '-')}.pdf`
-      const dateStr = new Date().toLocaleDateString('fr-FR', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric',
-      })
-      await exportReportToPdf(reportRef.current, filename, {
-        headerLeft: 'CAP 2030 · Profession Comptable',
-        headerRight: dateStr,
-      })
+      await exportReportToPdf({ report, profile, filename })
     } finally {
       setExporting(false)
     }
@@ -104,11 +94,7 @@ export default function Report({ report, profile, onReset }) {
         </div>
       </div>
 
-      <article
-        ref={reportRef}
-        className="bg-cream px-1 md:px-2"
-        style={{ orphans: 3, widows: 3 }}
-      >
+      <article className="bg-cream px-1 md:px-2">
         {/* PDF cover */}
         <header className="mb-12 pb-12 border-b border-rule">
           <div className="label-eyebrow-gold mb-4">CAP 2030 · Profession comptable</div>
