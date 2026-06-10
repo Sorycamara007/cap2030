@@ -18,11 +18,15 @@ export async function analyzeProfile(profile) {
 
   if (!res.ok) {
     let message = `Erreur ${res.status}`
-    try {
-      const data = await res.json()
-      if (data.error) message = data.error
-    } catch {
-      // ignore
+    if (res.status === 504) {
+      message = "L'analyse a dépassé le délai imparti côté serveur. Réessayez — la deuxième tentative est généralement plus rapide grâce au cache du prompt."
+    } else {
+      try {
+        const data = await res.json()
+        if (data.error) message = data.error
+      } catch {
+        // ignore
+      }
     }
     throw new Error(message)
   }
