@@ -15,7 +15,6 @@ L'accès est protégé par un mot de passe partagé (outil interne RH).
 - Score d'alignement CAP 2030 visualisé (jauge sur 100, justification rédigée).
 - Export du rapport en **PDF** (un clic).
 - Template RH imprimable (fiche profil collaborateur) à remplir avant saisie.
-- **Envoi automatique du rapport par email** au destinataire RH configuré (via Resend), incluant profil saisi et rapport complet mis en forme.
 - Design institutionnel : palette navy / crème / or, typographie Cormorant Garamond + Inter.
 
 ## Architecture
@@ -47,10 +46,7 @@ Le client React ne connaît jamais la clé API — elle reste côté serveur (Ex
 3. Dans **Settings → Environment Variables**, ajouter :
    - `ANTHROPIC_API_KEY` = votre clé Anthropic
    - `APP_PASSWORD` = mot de passe d'accès à l'application (partagé à l'équipe RH habilitée)
-   - `RESEND_API_KEY` = votre clé Resend (envoi des rapports par email)
-   - `REPORT_EMAIL_TO` = destinataire des rapports (ex. `ibrahima.camara@exco.fr`)
-   - `REPORT_EMAIL_FROM` = expéditeur (par défaut `CAP 2030 <onboarding@resend.dev>` — adresse fournie par Resend tant qu'aucun domaine personnalisé n'est vérifié)
-4. Déployer. Les routes `/api/login`, `/api/analyze`, `/api/send-report` et `/api/health` sont servies par les fonctions serverless de `api/`.
+4. Déployer. Les routes `/api/login`, `/api/analyze` et `/api/health` sont servies par les fonctions serverless de `api/`.
 
 ## Démarrage
 
@@ -65,9 +61,6 @@ Le client React ne connaît jamais la clé API — elle reste côté serveur (Ex
    # puis éditer .env :
    #   ANTHROPIC_API_KEY=<votre clé Anthropic>
    #   APP_PASSWORD=<mot de passe d'accès à l'application>
-   #   RESEND_API_KEY=<votre clé Resend>
-   #   REPORT_EMAIL_TO=<destinataire RH du rapport>
-   #   REPORT_EMAIL_FROM=CAP 2030 <onboarding@resend.dev>
    ```
 
 3. Lancer le frontend + le backend en parallèle :
@@ -84,7 +77,7 @@ Le client React ne connaît jamais la clé API — elle reste côté serveur (Ex
 1. Ouvrir http://localhost:5173.
 2. Renseigner les six champs du formulaire.
 3. Cliquer sur **« Lancer l'analyse CAP 2030 »**.
-4. Le rapport s'affiche **et** est envoyé automatiquement par email au destinataire RH configuré (`REPORT_EMAIL_TO`). Cliquer sur **« Exporter en PDF »** pour télécharger.
+4. Le rapport s'affiche. Cliquer sur **« Exporter en PDF »** pour télécharger.
 
 ### Template RH imprimable
 1. Cliquer sur **« Template RH imprimable »** dans l'en-tête.

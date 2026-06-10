@@ -5,7 +5,7 @@ import Report from './components/Report.jsx'
 import Loading from './components/Loading.jsx'
 import LoginScreen from './components/LoginScreen.jsx'
 import Template from './pages/Template.jsx'
-import { analyzeProfile, sendReportEmail } from './lib/api.js'
+import { analyzeProfile } from './lib/api.js'
 import { getToken, clearToken } from './lib/auth.js'
 
 export default function App() {
@@ -33,9 +33,6 @@ export default function App() {
     try {
       const data = await analyzeProfile(formData)
       setReport(data.report)
-      sendReportEmail(formData, data.report).catch((e) => {
-        console.warn('Envoi email rapport échoué :', e.message)
-      })
     } catch (err) {
       const msg = err.message || 'Une erreur est survenue lors de l\'analyse.'
       setError(msg)
