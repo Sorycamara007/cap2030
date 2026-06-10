@@ -29,9 +29,17 @@ export default async function handler(req, res) {
     const result = await analyzeProfileWithClaude(profile, apiKey);
 
     if (result.parseError) {
-      console.error('Échec parsing JSON modèle :', result.parseError);
+      console.error('Échec parsing JSON modèle :', {
+        parseError: result.parseError,
+        stopReason: result.stopReason,
+        rawTail: result.raw?.slice(-400),
+      });
+      const truncated = result.stopReason === 'max_tokens';
       return res.status(502).json({
-        error: "Le modèle a renvoyé une réponse non parseable. Réessayez.",
+        error: truncated
+          ? "La réponse du modèle a été tronquée (limite de tokens atteinte). Réessayez — le ticket sera relancé avec un budget plus large."
+          : "Le modèle a renvoyé une réponse non parseable. Réessayez.",
+        stopReason: result.stopReason,
         raw: result.raw,
       });
     }
