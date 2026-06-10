@@ -1,0 +1,32 @@
+{
+  "name": "cap2030-analyzer",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "CAP 2030 — Analyseur de profil collaborateur (Profession Comptable 2030)",
+  "scripts": {
+    "dev": "concurrently -n web,api -c blue,green \"vite\" \"node server/server.js\"",
+    "dev:web": "vite",
+    "dev:api": "node server/server.js",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "node server/server.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "html2pdf.js": "^0.10.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.3",
+    "autoprefixer": "^10.4.20",
+    "concurrently": "^9.1.0",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.14",
+    "vite": "^5.4.10"
+  }
+}
