@@ -50,12 +50,17 @@ function Section({ eyebrow, number, title, children }) {
 
 export default function Report({ report, profile, onReset }) {
   const [exporting, setExporting] = useState(false)
+  const [exportError, setExportError] = useState(null)
 
   async function handleExport() {
     setExporting(true)
+    setExportError(null)
     try {
       const filename = `cap2030-${(profile.intitulePoste || 'profil').toLowerCase().replace(/\s+/g, '-')}.pdf`
       await exportReportToPdf({ report, profile, filename })
+    } catch (err) {
+      console.error('Échec export PDF :', err)
+      setExportError(err.message || "L'export PDF a échoué — voir la console.")
     } finally {
       setExporting(false)
     }
@@ -79,18 +84,25 @@ export default function Report({ report, profile, onReset }) {
             Analyse CAP 2030 — {profile.intitulePoste}
           </h1>
         </div>
-        <div className="flex gap-3">
-          <button onClick={onReset} type="button" className="btn-ghost">
-            Nouveau profil
-          </button>
-          <button
-            onClick={handleExport}
-            type="button"
-            disabled={exporting}
-            className="btn-gold"
-          >
-            {exporting ? 'Export en cours…' : 'Exporter en PDF'}
-          </button>
+        <div className="flex flex-col items-end gap-2">
+          <div className="flex gap-3">
+            <button onClick={onReset} type="button" className="btn-ghost">
+              Nouveau profil
+            </button>
+            <button
+              onClick={handleExport}
+              type="button"
+              disabled={exporting}
+              className="btn-gold"
+            >
+              {exporting ? 'Export en cours…' : 'Exporter en PDF'}
+            </button>
+          </div>
+          {exportError && (
+            <div className="text-xs text-red-700 max-w-sm text-right">
+              {exportError}
+            </div>
+          )}
         </div>
       </div>
 

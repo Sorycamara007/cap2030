@@ -20,29 +20,9 @@ const COLORS = {
   rule: '#E6DFD2',
 }
 
-// react-pdf ships Helvetica/Times/Courier built-in.
-// We register Inter via Google Fonts CDN for the sans face,
-// keep Times-Roman for the serif/display face (no CDN dependency).
-Font.register({
-  family: 'Inter',
-  fonts: [
-    {
-      src: 'https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff',
-      fontWeight: 400,
-    },
-    {
-      src: 'https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7.woff',
-      fontWeight: 600,
-    },
-    {
-      src: 'https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIa1xL7.woff',
-      fontWeight: 700,
-    },
-  ],
-})
-
-// Hyphenation in french content tends to over-aggressively break words;
-// disable so words stay intact at line ends.
+// Stick to @react-pdf's built-in fonts (Helvetica, Times, Courier).
+// Avoids any CDN fetch that could fail and hang pdf().toBlob().
+// Disable hyphenation so french words don't break awkwardly mid-line.
 Font.registerHyphenationCallback((word) => [word])
 
 const PRIORITE_LABEL = { haute: 'Haute', moyenne: 'Moyenne', basse: 'Basse' }
@@ -62,7 +42,7 @@ const styles = StyleSheet.create({
     paddingTop: 72,
     paddingBottom: 64,
     paddingHorizontal: 56,
-    fontFamily: 'Inter',
+    fontFamily: 'Helvetica',
     fontSize: 10.5,
     color: COLORS.navy,
     backgroundColor: COLORS.cream,
@@ -132,10 +112,20 @@ const styles = StyleSheet.create({
   metaCell: {
     width: '50%',
     marginBottom: 10,
-    fontSize: 10,
+    paddingRight: 12,
   },
-  metaLabel: { color: COLORS.navyMuted },
-  metaValue: { color: COLORS.navy, fontWeight: 600 },
+  metaLabel: {
+    fontSize: 8,
+    color: COLORS.navyMuted,
+    textTransform: 'uppercase',
+    letterSpacing: 1.4,
+    marginBottom: 2,
+  },
+  metaValue: {
+    fontSize: 11,
+    color: COLORS.navy,
+    fontFamily: 'Helvetica-Bold',
+  },
   coverDate: {
     marginTop: 36,
     fontSize: 8,
@@ -558,28 +548,28 @@ export default function ReportPdf({ report, profile }) {
           <Text style={styles.coverTitle}>Rapport d'analyse de profil</Text>
           <View style={styles.goldRule} />
           <View style={styles.metaGrid}>
-            <Text style={styles.metaCell}>
-              <Text style={styles.metaLabel}>Poste : </Text>
+            <View style={styles.metaCell}>
+              <Text style={styles.metaLabel}>Poste</Text>
               <Text style={styles.metaValue}>
                 {profile.intitulePoste || '—'}
               </Text>
-            </Text>
-            <Text style={styles.metaCell}>
-              <Text style={styles.metaLabel}>Département : </Text>
+            </View>
+            <View style={styles.metaCell}>
+              <Text style={styles.metaLabel}>Département</Text>
               <Text style={styles.metaValue}>
                 {profile.departement || '—'}
               </Text>
-            </Text>
-            <Text style={styles.metaCell}>
-              <Text style={styles.metaLabel}>Niveau : </Text>
+            </View>
+            <View style={styles.metaCell}>
+              <Text style={styles.metaLabel}>Niveau</Text>
               <Text style={styles.metaValue}>{profile.niveau || '—'}</Text>
-            </Text>
-            <Text style={styles.metaCell}>
-              <Text style={styles.metaLabel}>Ancienneté : </Text>
+            </View>
+            <View style={styles.metaCell}>
+              <Text style={styles.metaLabel}>Ancienneté</Text>
               <Text style={styles.metaValue}>
                 {profile.anciennete || '—'}
               </Text>
-            </Text>
+            </View>
           </View>
           <Text style={styles.coverDate}>Édité le {dateStr}</Text>
         </View>
