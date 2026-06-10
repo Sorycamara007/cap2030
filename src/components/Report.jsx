@@ -28,7 +28,13 @@ const SCORE_RANGES = [
 
 function Section({ eyebrow, number, title, children }) {
   return (
-    <section className="py-12 md:py-16 border-t border-rule first:border-t-0 first:pt-0">
+    <section
+      className="py-12 md:py-16"
+      style={{
+        pageBreakBefore: 'always',
+        breakBefore: 'page',
+      }}
+    >
       <div className="flex items-baseline gap-6 mb-6">
         <span className="font-display text-gold text-2xl leading-none">
           {String(number).padStart(2, '0')}
@@ -57,7 +63,7 @@ export default function Report({ report, profile, onReset }) {
         year: 'numeric',
       })
       await exportReportToPdf(reportRef.current, filename, {
-        headerLeft: 'CAP 2030 · Exco Nexiom',
+        headerLeft: 'CAP 2030 · Profession Comptable',
         headerRight: dateStr,
       })
     } finally {
@@ -98,7 +104,11 @@ export default function Report({ report, profile, onReset }) {
         </div>
       </div>
 
-      <article ref={reportRef} className="bg-cream px-1 md:px-2">
+      <article
+        ref={reportRef}
+        className="bg-cream px-1 md:px-2"
+        style={{ orphans: 3, widows: 3 }}
+      >
         {/* PDF cover */}
         <header className="mb-12 pb-12 border-b border-rule">
           <div className="label-eyebrow-gold mb-4">CAP 2030 · Profession comptable</div>
@@ -200,13 +210,19 @@ export default function Report({ report, profile, onReset }) {
         </Section>
 
         <Section number={5} eyebrow="Trajectoire" title="Trajectoire 2030">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-4xl">
+          <div
+            className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-4xl"
+            style={{ breakInside: 'avoid', pageBreakInside: 'avoid' }}
+          >
             {[
               { label: 'Horizon 12 mois', value: trajectoire2030.horizon12mois },
               { label: 'Horizon 3 ans', value: trajectoire2030.horizon3ans },
               { label: 'Horizon 2030', value: trajectoire2030.horizon2030 },
             ].map((h) => (
-              <div key={h.label}>
+              <div
+                key={h.label}
+                style={{ breakInside: 'avoid', pageBreakInside: 'avoid' }}
+              >
                 <div className="label-eyebrow-gold mb-3">{h.label}</div>
                 <div className="rule-h mb-4" />
                 <p className="font-serif text-navy/90 text-base leading-relaxed">
@@ -218,39 +234,38 @@ export default function Report({ report, profile, onReset }) {
         </Section>
 
         <Section number={6} eyebrow="Score" title="Score d'alignement CAP 2030">
-          <ScoreVisual
-            score={scoreAlignement.score}
-            niveau={scoreAlignement.niveau}
-            justification={scoreAlignement.justification}
-          />
+          <div style={{ breakInside: 'avoid', pageBreakInside: 'avoid' }}>
+            <ScoreVisual
+              score={scoreAlignement.score}
+              niveau={scoreAlignement.niveau}
+              justification={scoreAlignement.justification}
+            />
 
-          <div
-            className="mt-10 pt-8 border-t border-rule max-w-3xl"
-            style={{ breakInside: 'avoid', pageBreakInside: 'avoid' }}
-          >
-            <div className="label-eyebrow mb-4">Légende du score</div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {SCORE_RANGES.map((r) => {
-                const score = Math.max(0, Math.min(100, Number(scoreAlignement.score) || 0))
-                const active = score >= r.min && score <= r.max
-                return (
-                  <div
-                    key={r.label}
-                    className={`px-4 py-3 border-l-2 ${active ? 'border-gold bg-gold/10' : 'border-rule bg-cream'}`}
-                  >
+            <div className="mt-10 pt-8 border-t border-rule max-w-3xl mx-auto">
+              <div className="label-eyebrow mb-4 text-center">Légende du score</div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {SCORE_RANGES.map((r) => {
+                  const score = Math.max(0, Math.min(100, Number(scoreAlignement.score) || 0))
+                  const active = score >= r.min && score <= r.max
+                  return (
                     <div
-                      className={`text-[10px] uppercase tracking-wider2 font-semibold mb-1 ${active ? 'text-gold' : 'text-navy/50'}`}
+                      key={r.label}
+                      className={`px-4 py-3 border-l-2 ${active ? 'border-gold bg-gold/10' : 'border-rule bg-cream'}`}
                     >
-                      {r.min}–{r.max}
+                      <div
+                        className={`text-[10px] uppercase tracking-wider2 font-semibold mb-1 ${active ? 'text-gold' : 'text-navy/50'}`}
+                      >
+                        {r.min}–{r.max}
+                      </div>
+                      <div
+                        className={`font-display text-lg leading-tight ${active ? 'text-navy' : 'text-navy/60'}`}
+                      >
+                        {r.label}
+                      </div>
                     </div>
-                    <div
-                      className={`font-display text-lg leading-tight ${active ? 'text-navy' : 'text-navy/60'}`}
-                    >
-                      {r.label}
-                    </div>
-                  </div>
-                )
-              })}
+                  )
+                })}
+              </div>
             </div>
           </div>
         </Section>
@@ -319,8 +334,13 @@ export default function Report({ report, profile, onReset }) {
         </Section>
 
         <section
-          className="mt-16 pt-12 border-t border-rule"
-          style={{ breakInside: 'avoid', pageBreakInside: 'avoid' }}
+          className="py-12 md:py-16"
+          style={{
+            pageBreakBefore: 'always',
+            breakBefore: 'page',
+            pageBreakInside: 'avoid',
+            breakInside: 'avoid',
+          }}
         >
           <div className="label-eyebrow-gold mb-8">Validation</div>
 
@@ -345,7 +365,7 @@ export default function Report({ report, profile, onReset }) {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 pt-4">
+          <div className="flex items-center gap-3 pt-4 mb-12">
             <span
               aria-hidden
               className="inline-block w-4 h-4 border border-navy shrink-0"
@@ -355,14 +375,14 @@ export default function Report({ report, profile, onReset }) {
               <span className="inline-block ml-2 border-b border-navy/40 w-48 align-bottom">&nbsp;</span>
             </span>
           </div>
-        </section>
 
-        <footer className="mt-16 pt-10 border-t border-rule">
-          <div className="flex flex-col md:flex-row justify-between gap-4 text-xs uppercase tracking-wider2 text-navy/50">
-            <div>Rapport généré par CAP 2030 Analyzer</div>
-            <div>Référentiel : cap.professioncomptable2030.fr</div>
+          <div className="mt-12 pt-8 border-t border-rule">
+            <div className="flex flex-col md:flex-row justify-between gap-4 text-xs uppercase tracking-wider2 text-navy/50">
+              <div>Rapport généré par CAP 2030 Analyzer</div>
+              <div>Référentiel : cap.professioncomptable2030.fr</div>
+            </div>
           </div>
-        </footer>
+        </section>
       </article>
     </div>
   )

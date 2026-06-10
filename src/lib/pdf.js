@@ -3,7 +3,7 @@ import html2pdf from 'html2pdf.js'
 export function exportReportToPdf(element, filename, meta = {}) {
   if (!element) return
 
-  const headerLeft = meta.headerLeft || 'CAP 2030 · Exco Nexiom'
+  const headerLeft = meta.headerLeft || 'CAP 2030 · Profession Comptable'
   const headerRight =
     meta.headerRight ||
     new Date().toLocaleDateString('fr-FR', {
