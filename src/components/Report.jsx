@@ -8,6 +8,24 @@ const PRIORITE_LABEL = {
   basse: 'Priorité basse',
 }
 
+const PRIORITE_SHORT = {
+  haute: 'Haute',
+  moyenne: 'Moyenne',
+  basse: 'Basse',
+}
+
+const ECHEANCE_BY_PRIORITE = {
+  haute: '0 à 3 mois',
+  moyenne: '3 à 9 mois',
+  basse: '9 à 18 mois',
+}
+
+const SCORE_RANGES = [
+  { min: 0, max: 40, label: 'Insuffisant' },
+  { min: 41, max: 70, label: 'Satisfaisant' },
+  { min: 71, max: 100, label: 'Aligné' },
+]
+
 function Section({ eyebrow, number, title, children }) {
   return (
     <section className="py-12 md:py-16 border-t border-rule first:border-t-0 first:pt-0">
@@ -33,7 +51,15 @@ export default function Report({ report, profile, onReset }) {
     setExporting(true)
     try {
       const filename = `cap2030-${(profile.intitulePoste || 'profil').toLowerCase().replace(/\s+/g, '-')}.pdf`
-      await exportReportToPdf(reportRef.current, filename)
+      const dateStr = new Date().toLocaleDateString('fr-FR', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+      })
+      await exportReportToPdf(reportRef.current, filename, {
+        headerLeft: 'CAP 2030 · Exco Nexiom',
+        headerRight: dateStr,
+      })
     } finally {
       setExporting(false)
     }
@@ -178,7 +204,130 @@ export default function Report({ report, profile, onReset }) {
             niveau={scoreAlignement.niveau}
             justification={scoreAlignement.justification}
           />
+
+          <div
+            className="mt-10 pt-8 border-t border-rule max-w-3xl"
+            style={{ breakInside: 'avoid', pageBreakInside: 'avoid' }}
+          >
+            <div className="label-eyebrow mb-4">Légende du score</div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              {SCORE_RANGES.map((r) => {
+                const score = Math.max(0, Math.min(100, Number(scoreAlignement.score) || 0))
+                const active = score >= r.min && score <= r.max
+                return (
+                  <div
+                    key={r.label}
+                    className={`px-4 py-3 border-l-2 ${active ? 'border-gold bg-gold/10' : 'border-rule bg-cream'}`}
+                  >
+                    <div
+                      className={`text-[10px] uppercase tracking-wider2 font-semibold mb-1 ${active ? 'text-gold' : 'text-navy/50'}`}
+                    >
+                      {r.min}–{r.max}
+                    </div>
+                    <div
+                      className={`font-display text-lg leading-tight ${active ? 'text-navy' : 'text-navy/60'}`}
+                    >
+                      {r.label}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
         </Section>
+
+        <Section number={7} eyebrow="Plan d'action" title="Plan d'action de formation">
+          <div className="max-w-3xl">
+            <table className="w-full border-collapse text-left">
+              <thead>
+                <tr className="border-b-2 border-navy/40">
+                  <th className="py-3 pr-4 text-[10px] uppercase tracking-wider2 text-navy/60 font-semibold align-bottom">
+                    Formation
+                  </th>
+                  <th className="py-3 px-3 text-[10px] uppercase tracking-wider2 text-navy/60 font-semibold align-bottom whitespace-nowrap">
+                    Priorité
+                  </th>
+                  <th className="py-3 px-3 text-[10px] uppercase tracking-wider2 text-navy/60 font-semibold align-bottom whitespace-nowrap">
+                    Durée
+                  </th>
+                  <th className="py-3 pl-3 text-[10px] uppercase tracking-wider2 text-navy/60 font-semibold align-bottom whitespace-nowrap">
+                    Échéance suggérée
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {recommandationsFormation.map((r, i) => (
+                  <tr
+                    key={i}
+                    className="border-b border-rule"
+                    style={{ breakInside: 'avoid', pageBreakInside: 'avoid' }}
+                  >
+                    <td className="py-4 pr-4 align-top">
+                      <div className="font-display text-navy text-base leading-snug">
+                        {r.intitule}
+                      </div>
+                      {r.rattachement && (
+                        <div className="text-[10px] uppercase tracking-wider2 text-navy/45 mt-1">
+                          Axe · {r.rattachement}
+                        </div>
+                      )}
+                    </td>
+                    <td className="py-4 px-3 align-top whitespace-nowrap">
+                      <span className="text-[10px] uppercase tracking-wider2 text-gold font-semibold">
+                        {PRIORITE_SHORT[r.priorite] || r.priorite}
+                      </span>
+                    </td>
+                    <td className="py-4 px-3 align-top whitespace-nowrap font-serif text-navy/85 text-sm">
+                      {r.duree || '—'}
+                    </td>
+                    <td className="py-4 pl-3 align-top whitespace-nowrap font-serif text-navy/85 text-sm">
+                      {ECHEANCE_BY_PRIORITE[r.priorite] || '—'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Section>
+
+        <section
+          className="mt-16 pt-12 border-t border-rule"
+          style={{ breakInside: 'avoid', pageBreakInside: 'avoid' }}
+        >
+          <div className="label-eyebrow-gold mb-8">Validation</div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
+            <div>
+              <div className="text-xs uppercase tracking-wider2 text-navy/60 font-semibold mb-16">
+                Signature RH
+              </div>
+              <div className="h-px bg-navy/40 mb-2" />
+              <div className="text-[10px] uppercase tracking-wider2 text-navy/40">
+                Date · Lieu
+              </div>
+            </div>
+            <div>
+              <div className="text-xs uppercase tracking-wider2 text-navy/60 font-semibold mb-16">
+                Signature Collaborateur
+              </div>
+              <div className="h-px bg-navy/40 mb-2" />
+              <div className="text-[10px] uppercase tracking-wider2 text-navy/40">
+                Date · Lieu
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 pt-4">
+            <span
+              aria-hidden
+              className="inline-block w-4 h-4 border border-navy shrink-0"
+            />
+            <span className="text-sm font-serif text-navy/85">
+              Document remis au collaborateur le :
+              <span className="inline-block ml-2 border-b border-navy/40 w-48 align-bottom">&nbsp;</span>
+            </span>
+          </div>
+        </section>
 
         <footer className="mt-16 pt-10 border-t border-rule">
           <div className="flex flex-col md:flex-row justify-between gap-4 text-xs uppercase tracking-wider2 text-navy/50">
