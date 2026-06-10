@@ -6,6 +6,13 @@ export default async function handler(req, res) {
   }
 
   try {
+    const expectedPassword = process.env.APP_PASSWORD;
+    const auth = req.headers.authorization || '';
+    const token = auth.replace(/^Bearer\s+/i, '').trim();
+    if (!expectedPassword || token !== expectedPassword) {
+      return res.status(401).json({ error: 'Non authentifié' });
+    }
+
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
       return res.status(500).json({

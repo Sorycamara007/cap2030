@@ -2,9 +2,11 @@
 
 Application React de comparaison d'un profil collaborateur au référentiel
 **CAP 2030** de la profession comptable. Génère un rapport structuré via l'API
-Claude (`claude-sonnet-4-20250514`) ancré dans le contenu officiel des sites
+Claude (`claude-sonnet-4-6`) ancré dans le contenu officiel des sites
 [cap.professioncomptable2030.fr](https://cap.professioncomptable2030.fr/) et
 [experts-comptables.fr/sites/profession-comptable-2030/](https://www.experts-comptables.fr/sites/profession-comptable-2030/).
+
+L'accès est protégé par un mot de passe partagé (outil interne RH).
 
 ## Fonctionnalités
 
@@ -43,7 +45,8 @@ Le client React ne connaît jamais la clé API — elle reste côté serveur (Ex
 2. Vercel détecte automatiquement Vite. Ne pas modifier les commandes par défaut.
 3. Dans **Settings → Environment Variables**, ajouter :
    - `ANTHROPIC_API_KEY` = votre clé Anthropic
-4. Déployer. Les routes `/api/analyze` et `/api/health` sont servies par les fonctions serverless de `api/`.
+   - `APP_PASSWORD` = mot de passe d'accès à l'application (partagé à l'équipe RH habilitée)
+4. Déployer. Les routes `/api/login`, `/api/analyze` et `/api/health` sont servies par les fonctions serverless de `api/`.
 
 ## Démarrage
 
@@ -52,10 +55,12 @@ Le client React ne connaît jamais la clé API — elle reste côté serveur (Ex
    npm install
    ```
 
-2. Copier `.env.example` vers `.env` et y renseigner votre clé :
+2. Copier `.env.example` vers `.env` et renseigner :
    ```bash
    cp .env.example .env
-   # puis éditer .env et coller votre clé ANTHROPIC_API_KEY
+   # puis éditer .env :
+   #   ANTHROPIC_API_KEY=<votre clé Anthropic>
+   #   APP_PASSWORD=<mot de passe d'accès à l'application>
    ```
 
 3. Lancer le frontend + le backend en parallèle :
@@ -85,9 +90,9 @@ par le service RH.
 
 ## Configuration du modèle
 
-Le modèle utilisé est `claude-sonnet-4-20250514`, configurable dans
-[server/server.js](server/server.js). Le référentiel injecté dans le system prompt
-se trouve dans [server/capFramework.js](server/capFramework.js).
+Le modèle utilisé est `claude-sonnet-4-6`, configurable dans
+[lib/cap-analyzer.js](lib/cap-analyzer.js). Le référentiel injecté dans le system prompt
+se trouve dans [lib/capFramework.js](lib/capFramework.js).
 
 ## Build de production
 

@@ -1,9 +1,20 @@
+import { getToken, clearToken } from './auth.js'
+
 export async function analyzeProfile(profile) {
+  const token = getToken()
   const res = await fetch('/api/analyze', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
     body: JSON.stringify(profile),
   })
+
+  if (res.status === 401) {
+    clearToken()
+    throw new Error('Session expirée — veuillez vous reconnecter.')
+  }
 
   if (!res.ok) {
     let message = `Erreur ${res.status}`

@@ -16,11 +16,36 @@ app.use(express.json({ limit: '1mb' }));
 const PORT = process.env.PORT || 3001;
 
 app.get('/api/health', (_req, res) => {
-  res.json({ ok: true, hasKey: Boolean(process.env.ANTHROPIC_API_KEY) });
+  res.json({
+    ok: true,
+    hasKey: Boolean(process.env.ANTHROPIC_API_KEY),
+    hasPassword: Boolean(process.env.APP_PASSWORD),
+  });
+});
+
+app.post('/api/login', (req, res) => {
+  const expected = process.env.APP_PASSWORD;
+  if (!expected) {
+    return res.status(500).json({
+      error: "Mot de passe non configuré côté serveur (APP_PASSWORD manquant).",
+    });
+  }
+  const { password } = req.body || {};
+  if (typeof password !== 'string' || password !== expected) {
+    return res.status(401).json({ error: 'Mot de passe incorrect' });
+  }
+  res.json({ ok: true, token: expected });
 });
 
 app.post('/api/analyze', async (req, res) => {
   try {
+    const expectedPassword = process.env.APP_PASSWORD;
+    const auth = req.headers.authorization || '';
+    const token = auth.replace(/^Bearer\s+/i, '').trim();
+    if (!expectedPassword || token !== expectedPassword) {
+      return res.status(401).json({ error: 'Non authentifié' });
+    }
+
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
       return res.status(500).json({

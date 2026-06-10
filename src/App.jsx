@@ -3,15 +3,27 @@ import Header from './components/Header.jsx'
 import ProfileForm from './components/ProfileForm.jsx'
 import Report from './components/Report.jsx'
 import Loading from './components/Loading.jsx'
+import LoginScreen from './components/LoginScreen.jsx'
 import Template from './pages/Template.jsx'
 import { analyzeProfile } from './lib/api.js'
+import { getToken, clearToken } from './lib/auth.js'
 
 export default function App() {
+  const [authed, setAuthed] = useState(() => Boolean(getToken()))
   const [view, setView] = useState('analyzer') // 'analyzer' | 'template'
   const [profile, setProfile] = useState(null)
   const [report, setReport] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+
+  function handleLogout() {
+    clearToken()
+    setAuthed(false)
+    setReport(null)
+    setProfile(null)
+    setError(null)
+    setView('analyzer')
+  }
 
   async function handleSubmit(formData) {
     setLoading(true)
@@ -22,7 +34,11 @@ export default function App() {
       const data = await analyzeProfile(formData)
       setReport(data.report)
     } catch (err) {
-      setError(err.message || 'Une erreur est survenue lors de l\'analyse.')
+      const msg = err.message || 'Une erreur est survenue lors de l\'analyse.'
+      setError(msg)
+      if (/session expirée/i.test(msg)) {
+        setAuthed(false)
+      }
     } finally {
       setLoading(false)
     }
@@ -35,13 +51,20 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  if (!authed) {
+    return <LoginScreen onAuthenticated={() => setAuthed(true)} />
+  }
+
   if (view === 'template') {
     return <Template onBack={() => setView('analyzer')} />
   }
 
   return (
     <div className="min-h-screen bg-cream text-navy">
-      <Header onShowTemplate={() => setView('template')} />
+      <Header
+        onShowTemplate={() => setView('template')}
+        onLogout={handleLogout}
+      />
 
       <main className="max-w-5xl mx-auto px-6 md:px-10 py-12 md:py-20">
         {!report && !loading && (

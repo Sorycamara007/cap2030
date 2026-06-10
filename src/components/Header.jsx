@@ -1,4 +1,4 @@
-export default function Header({ onShowTemplate }) {
+export default function Header({ onShowTemplate, onLogout }) {
   return (
     <header className="border-b border-rule no-print">
       <div className="max-w-5xl mx-auto px-6 md:px-10 py-6 flex items-center justify-between">
@@ -21,6 +21,14 @@ export default function Header({ onShowTemplate }) {
             className="text-xs uppercase tracking-wider2 text-navy/70 hover:text-gold transition-colors"
           >
             Template RH imprimable
+          </button>
+          <span className="h-4 w-px bg-navy/15" />
+          <button
+            type="button"
+            onClick={onLogout}
+            className="text-xs uppercase tracking-wider2 text-navy/70 hover:text-gold transition-colors"
+          >
+            Se déconnecter
           </button>
         </nav>
       </div>
