@@ -25,6 +25,8 @@ const EMPTY = {
   anciennete: '',
   departement: '',
   niveau: '',
+  objectifProfessionnel3ans: '',
+  formationsDejaSuivies: '',
 }
 
 export default function ProfileForm({ onSubmit, error }) {
@@ -147,6 +149,49 @@ export default function ProfileForm({ onSubmit, error }) {
           rows={6}
           required
         />
+      </section>
+
+      <section>
+        <div className="label-eyebrow mb-3">Section 04 · Aspirations & parcours</div>
+        <div className="rule-h mb-10" />
+
+        <div className="space-y-10">
+          <div>
+            <label className="block label-eyebrow mb-3">
+              Objectif professionnel à 3 ans
+            </label>
+            <p className="text-sm text-navy/60 font-serif mb-4 max-w-2xl">
+              Optionnel — la cible métier ou la prise de responsabilité visée
+              par le collaborateur d'ici 3 ans. Sert à ancrer la trajectoire 2030
+              du rapport.
+            </p>
+            <input
+              type="text"
+              value={data.objectifProfessionnel3ans}
+              onChange={(e) => update('objectifProfessionnel3ans', e.target.value)}
+              placeholder="Ex. Évoluer vers un poste de manager d'équipe avec dimension conseil renforcée"
+              className="input-base"
+            />
+          </div>
+
+          <div>
+            <label className="block label-eyebrow mb-3">
+              Formations déjà suivies
+            </label>
+            <p className="text-sm text-navy/60 font-serif mb-4 max-w-2xl">
+              Optionnel — les formations CFPC ou équivalentes déjà suivies.
+              Permet d'éviter de recommander à nouveau ces parcours et
+              de calibrer les axes de développement.
+            </p>
+            <textarea
+              value={data.formationsDejaSuivies}
+              onChange={(e) => update('formationsDejaSuivies', e.target.value)}
+              placeholder="Ex. Initiation à la facturation électronique (CFPC, 2024), DEC obtenu en 2022, formation interne Cegid en 2023…"
+              className="textarea-base"
+              rows={5}
+            />
+          </div>
+        </div>
       </section>
 
       {error && (
