@@ -116,6 +116,39 @@ export default function Template({ onBack }) {
           <WriteLines count={9} />
         </section>
 
+        {/* Section 04 — Aspirations & Parcours */}
+        <section className="mb-8">
+          <div className="flex items-baseline gap-4 mb-4">
+            <span className="font-display text-gold text-xl">04</span>
+            <div className="label-eyebrow">Aspirations &amp; Parcours</div>
+          </div>
+          <div className="rule-h mb-6" />
+
+          <div className="space-y-8">
+            <div>
+              <div className="label-eyebrow mb-2">
+                Objectif professionnel à 3 ans
+              </div>
+              <p className="text-[13px] font-serif italic text-navy/60 mb-4 max-w-2xl">
+                Cible métier, prise de responsabilité ou type de mission visée à
+                l'horizon 3 ans. Sert à ancrer la trajectoire 2030 du rapport.
+              </p>
+              <WriteLines count={4} />
+            </div>
+
+            <div>
+              <div className="label-eyebrow mb-2">
+                Formations déjà suivies
+              </div>
+              <p className="text-[13px] font-serif italic text-navy/60 mb-4 max-w-2xl">
+                Formations CFPC ou équivalentes déjà suivies (avec année si possible).
+                Ces parcours ne seront pas re-recommandés dans le rapport.
+              </p>
+              <WriteLines count={6} />
+            </div>
+          </div>
+        </section>
+
         {/* Signatures */}
         <section className="mt-12 pt-8 border-t border-rule grid grid-cols-2 gap-10">
           <div>
