@@ -1,6 +1,6 @@
-export default function Header({ onShowTemplate, onLogout }) {
+export default function Header({ onLogout }) {
   return (
-    <header className="border-b border-rule no-print">
+    <header className="border-b border-rule">
       <div className="max-w-5xl mx-auto px-6 md:px-10 py-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="w-10 h-10 border border-navy flex items-center justify-center">
@@ -15,14 +15,6 @@ export default function Header({ onShowTemplate, onLogout }) {
         </div>
 
         <nav className="flex items-center gap-6">
-          <button
-            type="button"
-            onClick={onShowTemplate}
-            className="text-xs uppercase tracking-wider2 text-navy/70 hover:text-gold transition-colors"
-          >
-            Template RH imprimable
-          </button>
-          <span className="h-4 w-px bg-navy/15" />
           <button
             type="button"
             onClick={onLogout}

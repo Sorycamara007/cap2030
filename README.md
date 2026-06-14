@@ -14,7 +14,6 @@ L'accès est protégé par un mot de passe partagé (outil interne RH).
 - Rapport structuré à 6 sections : Synthèse · Points forts · Axes de développement · Recommandations formation · Trajectoire 2030 · Score d'alignement.
 - Score d'alignement CAP 2030 visualisé (jauge sur 100, justification rédigée).
 - Export du rapport en **PDF** (un clic).
-- Template RH imprimable (fiche profil collaborateur) à remplir avant saisie.
 - Design institutionnel : palette navy / crème / or, typographie Cormorant Garamond + Inter.
 
 ## Architecture
@@ -32,8 +31,7 @@ Cap2030/
 ├── src/
 │   ├── App.jsx
 │   ├── components/      # Header, ProfileForm, Report, ScoreVisual, Loading
-│   ├── pages/Template.jsx  # Template RH imprimable
-│   └── lib/             # api.js, pdf.js
+│   └── lib/             # api.js, pdf.jsx
 └── vercel.json
 ```
 
@@ -75,18 +73,9 @@ Le client React ne connaît jamais la clé API — elle reste côté serveur (Ex
 
 ### Analyse d'un profil
 1. Ouvrir http://localhost:5173.
-2. Renseigner les six champs du formulaire.
+2. Renseigner les champs du formulaire.
 3. Cliquer sur **« Lancer l'analyse CAP 2030 »**.
 4. Le rapport s'affiche. Cliquer sur **« Exporter en PDF »** pour télécharger.
-
-### Template RH imprimable
-1. Cliquer sur **« Template RH imprimable »** dans l'en-tête.
-2. Cliquer sur **« Imprimer / Enregistrer en PDF »**.
-3. Dans la boîte de dialogue d'impression, choisir « Enregistrer au format PDF » comme destination.
-
-Le template reproduit exactement les champs de l'application — il peut donc être
-rempli à la main ou saisi en amont par les collaborateurs, puis recopié dans l'outil
-par le service RH.
 
 ## Configuration du modèle
 

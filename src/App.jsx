@@ -4,13 +4,11 @@ import ProfileForm from './components/ProfileForm.jsx'
 import Report from './components/Report.jsx'
 import Loading from './components/Loading.jsx'
 import LoginScreen from './components/LoginScreen.jsx'
-import Template from './pages/Template.jsx'
 import { analyzeProfile } from './lib/api.js'
 import { getToken, clearToken } from './lib/auth.js'
 
 export default function App() {
   const [authed, setAuthed] = useState(() => Boolean(getToken()))
-  const [view, setView] = useState('analyzer') // 'analyzer' | 'template'
   const [profile, setProfile] = useState(null)
   const [report, setReport] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -22,7 +20,6 @@ export default function App() {
     setReport(null)
     setProfile(null)
     setError(null)
-    setView('analyzer')
   }
 
   async function handleSubmit(formData) {
@@ -55,16 +52,9 @@ export default function App() {
     return <LoginScreen onAuthenticated={() => setAuthed(true)} />
   }
 
-  if (view === 'template') {
-    return <Template onBack={() => setView('analyzer')} />
-  }
-
   return (
     <div className="min-h-screen bg-cream text-navy">
-      <Header
-        onShowTemplate={() => setView('template')}
-        onLogout={handleLogout}
-      />
+      <Header onLogout={handleLogout} />
 
       <main className="max-w-5xl mx-auto px-6 md:px-10 py-12 md:py-20">
         {!report && !loading && (
@@ -98,7 +88,7 @@ export default function App() {
         )}
       </main>
 
-      <footer className="border-t border-rule mt-20 py-10 no-print">
+      <footer className="border-t border-rule mt-20 py-10">
         <div className="max-w-5xl mx-auto px-6 md:px-10 flex flex-col md:flex-row justify-between gap-6 text-xs uppercase tracking-wider2 text-navy/50">
           <div>CAP 2030 · Outil interne RH</div>
           <div>Référentiel : cap.professioncomptable2030.fr</div>
